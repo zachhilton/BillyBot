@@ -109,51 +109,60 @@ while turn < 10:
         print(stats)
 
         # k-level = 4
-        # min = 1000000
-        # min_index1 = 0
-        # sums = dummy_stats.sum(axis=1)
-        # i = 0
-        # while i < 10:
-        #     if i in sums:
-        #         sum = sums[i]
-        #         if sum < min:
-        #             min = sum
-        #             min_index1 = i
-        #     i += 1
-        #
-        # i = 0
-        # max = -1000000
-        # max_index = 0
-        # while i < 10+offset:
-        #     if i in dummy_stats.sum(axis=0):
-        #         col = stats[i][min_index1]
-        #         if col > max:
-        #             max = col
-        #             max_index = i
-        #     i += 1
-        #
-        # i = 0
-        # min = 1000000
-        # min_index = 0
-        # while i < 10:
-        #     if i in dummy_stats.sum(axis=1):
-        #         row = stats[max_index][i]
-        #         if row < min:
-        #             min = row
-        #             min_index = i
-        #     i += 1
-        #
-        #
-        #
-        # k4_guess = min_index
-        #
-        #
-        # if player_choices[turn] == k4_guess and turn !=9:
-        #     k4_success = (k4_success+1)
-        # k4_success=k4_success*0.75246342
-        #
-        # print("Billy thought you would have played " + str(min_index1) + ", so he would have played " + str(
-        #     max_index) + ", but then he expected you to play "+ str(min_index))
+        min = 1000000
+        min_indices1 = [0]
+        sums = dummy_stats.sum(axis=1)
+        i = 0
+        while i < 10:
+            if i in sums:
+                sum = sums[i]
+                if sum == min:
+                    min_indices1.append(i)
+                if sum < min:
+                    min = sum
+                    min_indices1 = [i]
+            i += 1
+
+        min_index1 = min_indices1[int(random.random()*len(min_indices1))]
+
+        i = 0
+        max = -1000000
+        max_indices = [0]
+        while i < 10+offset:
+            if i in dummy_stats.sum(axis=0):
+                col = stats[i][min_index1]
+                if col == max:
+                    max_indices.append(i)
+                if col > max:
+                    max = col
+                    max_indices = [i]
+            i += 1
+
+        max_index = max_indices[int(random.random()*len(max_indices))]
+
+        i = 0
+        min = 1000000
+        min_indices2 = [0]
+        while i < 10:
+            if i in dummy_stats.sum(axis=1):
+                row = stats[max_index][i]
+                if row == min:
+                    min_indices2.append(i)
+                if row < min:
+                    min = row
+                    min_indices2 = [i]
+            i += 1
+
+        min_index2 = min_indices2[int(random.random()*len(min_indices2))]
+
+
+
+        k4_guess = min_index2
+
+
+
+        print("Billy thought you would have played " + str(min_index1) + ", so he would have played " + str(
+            max_index) + ", but then he expected you to play "+ str(min_index2))
 
 
         # k-level = 3
@@ -209,11 +218,11 @@ while turn < 10:
         print("Billy expected you to play " + str(min_index))
 
         # k-4 effect
-        # j = 0
-        # while j < 10 + offset:
-        #     if j in stats.sum(axis=0):
-        #         dummy_stats[j][k4_guess] += stats[j][k4_guess] * (k4_success)
-        #     j += 1
+        j = 0
+        while j < 10 + offset:
+            if j in stats.sum(axis=0):
+                dummy_stats[j][k4_guess] += stats[j][k4_guess] * (k4_success)
+            j += 1
 
         # k-3 effect
         j = 0
@@ -265,6 +274,8 @@ while turn < 10:
             k2_success = (k2_success+1)
         if player_choices[turn] == k3_guess:
             k3_success = (k3_success+1)
+        if player_choices[turn] == k4_guess:
+            k4_success = (k4_success+1)
 
         print(dummy_stats)
 
