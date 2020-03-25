@@ -26,7 +26,7 @@ ai_choices = []
 player_points = 0
 ai_points = 0
 
-factor = 0
+factor = 1
 
 k2_success = factor
 k3_success = factor
@@ -89,16 +89,16 @@ while turn < 10:
                     j += 1
             i += 1
 
-    print(stats)
-
-    # Making the decision
-
+    # The player takes his turn first
     player_choices.append('placeholder')
     while player_choices[turn] not in player_available:
-        player_choices[turn] = (int(raw_input("You have " + str(player_available) + " available, and Billy has " + str(ai_available) + ". What will your move be? ")))
+        player_choices[turn] = (int(raw_input(
+            "You have " + str(player_available) + " available, and Billy has " + str(
+                ai_available) + ". What will your move be? ")))
         if player_choices[turn] not in player_available:
             print("LOSER FACE. TRY AGAIN")
 
+    # Now Billy takes his turn
     if turn == 0:
         # k-level = 0
         ai_choices.append(int(random.random()*10+offset))
@@ -187,14 +187,8 @@ while turn < 10:
             i += 1
 
         min_index = min_indices[int(random.random()*len(min_indices))]
-
-
         k3_guess = min_index
-
-
-
         print("Billy would have played " + str(max_index) + ", so he expected you to play " + str(k3_guess))
-
 
         # k-level = 2
         min = 1000000
@@ -212,10 +206,7 @@ while turn < 10:
             i += 1
 
         min_index = min_indices[int(random.random()*len(min_indices))]
-
-
         print("Billy expected you to play " + str(min_index))
-
 
         # k-4 effect
         # j = 0
@@ -231,8 +222,7 @@ while turn < 10:
                 dummy_stats[j][k3_guess] += stats[j][k3_guess] * (k3_success)
                 # dummy_stats[j][k3_guess] *= (k3_success)
             j += 1
-        if player_choices[turn] == k3_guess:
-            k3_success = (k3_success+1)
+
         # k-2 effect
         j = 0
         while j < 10 + offset:
@@ -240,8 +230,7 @@ while turn < 10:
                 dummy_stats[j][min_index] += stats[j][min_index] * (k2_success)
                 # dummy_stats[j][min_index] *= (k2_success)
             j += 1
-        if player_choices[turn] == min_index:
-            k2_success = (k2_success+1)
+
         # extremities
         # i = 0
         # while i < 10:
@@ -272,10 +261,12 @@ while turn < 10:
         #     extremity_success+=1
 
 
-
+        if player_choices[turn] == min_index:
+            k2_success = (k2_success+1)
+        if player_choices[turn] == k3_guess:
+            k3_success = (k3_success+1)
 
         print(dummy_stats)
-
 
         # k-level = 1
         max = -100000
@@ -296,7 +287,6 @@ while turn < 10:
 
         ai_choices.append(max_index)
         print("Billy played " + str(ai_choices[turn]))
-
 
 
     print(str(player_choices[turn]) + " vs " + str(ai_choices[turn]))
